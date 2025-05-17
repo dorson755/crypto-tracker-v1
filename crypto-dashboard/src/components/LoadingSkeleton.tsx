@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function SkeletonLoader() {
+export default function LoadingSkeleton() {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -15,6 +15,7 @@ export default function SkeletonLoader() {
         <div className="h-6 bg-gray-700 rounded w-1/2 animate-pulse" />
         <div className="h-4 bg-gray-700 rounded w-1/4 animate-pulse" />
       </div>
+      <div className="h-12 bg-gray-700 rounded animate-pulse" />
     </motion.div>
   );
 }
