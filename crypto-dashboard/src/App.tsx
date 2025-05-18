@@ -1,23 +1,11 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { fetchCryptoData } from "./api/crypto";
-import { fetchUserLocation } from "./api/geolocation";
-import { setupWebSocket } from "./lib/websocket";
-import CryptoCard from "./components/CryptoCard";
-import FilterControls from "./components/FilterControls";
-import LoadingSkeleton from "./components/LoadingSkeleton";
-
-interface Coin {
-  id: string;
-  name: string;
-  symbol: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  image: string;
-  sparkline_in_7d: {
-    price: number[];
-  };
-}
+// src/App.tsx
+import { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import FilterControls from './components/FilterControls';
+import CryptoCard from './components/CryptoCard';
+import LoadingSkeleton from './components/LoadingSkeleton';
+import { useLiveCrypto, type Coin } from './hooks/useLiveCrypto';
+import { fetchUserLocation } from './api/geolocation';
 
 interface LocationData {
   city?: string;
@@ -25,79 +13,41 @@ interface LocationData {
 }
 
 export default function App() {
-  const [coins, setCoins] = useState<Coin[]>([]);
+  const coins = useLiveCrypto(10);             // ← initial + live updates
   const [location, setLocation] = useState<LocationData>({});
-  const [activeFilter, setActiveFilter] = useState<"all" | "gainers" | "losers">("all");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [activeFilter, setActiveFilter] = useState<'all' | 'gainers' | 'losers'>('all');
+  const [loadingLocation, setLoadingLocation] = useState(true);
+  const [locError, setLocError] = useState('');
 
-  // WebSocket updates handler
-  const handlePriceUpdate = useCallback((id: string, price: number, percentage: number) => {
-    setCoins(prev => prev.map(coin => 
-      coin.id === id ? { 
-        ...coin, 
-        current_price: price,
-        price_change_percentage_24h: percentage
-      } : coin
-    ));
+  // Fetch user location once
+  useEffect(() => {
+    fetchUserLocation()
+      .then(loc => setLocation(loc))
+      .catch(err => setLocError(err.message))
+      .finally(() => setLoadingLocation(false));
   }, []);
 
-  useEffect(() => {
-  let cleanupWs: () => void;
-
-  const initializeData = async () => {
-    try {
-      const [cryptoData, locationData] = await Promise.all([
-        fetchCryptoData(),
-        fetchUserLocation()
-      ]);
-
-      if (cryptoData.length === 0) {
-        throw new Error("Failed to load cryptocurrency data");
-      }
-
-      setCoins(cryptoData);
-      setLocation(locationData);
-      setLoading(false);
-
-      // Initialize WebSocket after data load
-      const coinIds = cryptoData.slice(0, 5).map(c => c.id);
-      cleanupWs = setupWebSocket(coinIds, handlePriceUpdate);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error occurred");
-      setLoading(false);
-    }
-  };
-
-  initializeData();
-
-  // Cleanup function
-  return () => {
-    if (cleanupWs) {
-      cleanupWs();
-    }
-  };
-}, [handlePriceUpdate]);
-
-  const filteredCoins = useMemo(() => 
-    coins.filter(coin => {
-      if (activeFilter === "gainers") return coin.price_change_percentage_24h >= 0;
-      if (activeFilter === "losers") return coin.price_change_percentage_24h < 0;
+  // Apply gainers/losers filter
+  const filtered = useMemo(() => {
+    return coins.filter(c => {
+      if (activeFilter === 'gainers') return c.price_change_percentage_24h > 0;
+      if (activeFilter === 'losers')  return c.price_change_percentage_24h < 0;
       return true;
-    }),
-  [coins, activeFilter]);
+    });
+  }, [coins, activeFilter]);
 
-  if (error) {
+  // Render error if location fails
+  if (locError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center p-4">
-        <div className="glass-card p-6 text-center max-w-md">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">⚠️ Error</h2>
-          <p className="mb-4">{error}</p>
+        <div className="glass-card p-6 max-w-md text-center">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Location Error</h2>
+          <p>{locError}</p>
           <button
-            className="px-4 py-2 bg-purple-500/30 rounded hover:bg-purple-500/50"
+            className="mt-4 px-4 py-2 bg-purple-500/30 rounded hover:bg-purple-500/50"
             onClick={() => window.location.reload()}
           >
-            Try Again
+            Retry
           </button>
         </div>
       </div>
@@ -107,30 +57,35 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
+
+        {/* Greeting */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="glass-card p-6 mb-6 rounded-xl"
         >
           <h1 className="text-2xl md:text-3xl font-bold text-white text-center">
-            {loading ? "Loading..." : `Hello from ${location.city || "the web"}!`}
+            {loadingLocation
+              ? 'Detecting your location…'
+              : `Hello from ${location.city || 'the web'}!`}
           </h1>
         </motion.div>
 
-        <FilterControls 
+        {/* Filter buttons */}
+        <FilterControls
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}
         />
 
+        {/* Coins grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence>
-            {loading ? (
-              Array(6).fill(0).map((_, i) => <LoadingSkeleton key={i} />)
-            ) : (
-              filteredCoins.map(coin => (
-                <CryptoCard key={coin.id} coin={coin} location={location} />
-              ))
-            )}
+            {coins.length === 0
+              ? Array(6).fill(0).map((_, i) => <LoadingSkeleton key={i} />)
+              : filtered.map((coin: Coin) => (
+                  <CryptoCard key={coin.id} coin={coin} location={location} />
+                ))
+            }
           </AnimatePresence>
         </div>
       </div>
