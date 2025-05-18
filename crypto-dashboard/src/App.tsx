@@ -1,4 +1,3 @@
-import React from 'react';
 import Sidebar from './components/Sidebar';
 import Greeting from './components/Greeting';
 import CryptoGrid from './components/CryptoGrid';

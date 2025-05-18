@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLiveCrypto, type Coin } from '../hooks/useLiveCrypto';
 import TileCard from './TileCard';
 
