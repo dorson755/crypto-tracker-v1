@@ -1,25 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{js,jsx,ts,tsx,html}'],
+  content: ['./index.html','./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        richBg:     '#1B2A25',
-        richPanel:  '#22332E',
-        gold:       '#B79F55',
-        ivory:      '#E4DCCF',
-        panelBorder:'#B79F55',
+        richBg:    '#1A1F16',
+        richPanel: '#111F16',
+        gold:      '#B79F55',
+        ivory:     '#E4DCCF',
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'serif'],
       },
-      boxShadow: {
-        rich: '0 4px 12px rgba(23,18,15,0.5)',
-      },
-      borderRadius: {
-        '2xl': '1rem',
-      },
     },
   },
   plugins: [],
-}
+};

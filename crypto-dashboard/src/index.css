@@ -1,75 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
+@import 'cryptocoins-icons/webfont/cryptocoins.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 1) Full-screen olive/charcoal gradient */
-html, body {
-  @apply m-0 p-0 w-full h-full font-serif;
-  background: linear-gradient(135deg, #2A3A33, #1F2A26);
-  color: #E4DCCF; /* ivory */
-}
-
-/* 2) Sidebar styling */
-.sidebar {
-  @apply w-20 min-h-screen p-4 flex flex-col items-center;
-  background: #27312D; /* rich dark green */
-}
-.sidebar .icon-btn {
-  @apply mb-6 w-12 h-12 flex items-center justify-center rounded-lg border border-[#3A473F] hover:bg-[#3A473F] transition;
-  color: #B79F55; /* gold */
-}
-
-/* 3) Header integrated */
-.app-header {
-  @apply w-full px-6 py-4 mb-6;
-  background: #27312D;
-  border-bottom: 1px solid #3A473F;
-}
-.app-header h1 {
-  @apply text-4xl text-[#B79F55];
-}
-
-/* 4) Panel cards with fancy corners */
+/* Chamfered panel card with gold trim */
 .panel-card {
-  @apply p-6 relative bg-[#22332E] border border-[#3A473F] shadow-[0_4px_12px_rgba(23,18,15,0.5)];
-}
-/* Beveled corner effect */
-.panel-card::before,
-.panel-card::after {
-  content: '';
-  position: absolute;
-  width: 1rem; height: 1rem;
+  @apply relative bg-richPanel text-ivory p-6 overflow-hidden;
+  /* Cut 10px off each corner */
+  clip-path: polygon(
+    10px 0%, 100% 0%, 100% calc(100% - 10px),
+    calc(100% - 10px) 100%, 0% 100%, 0% 10px
+  );
   border: 2px solid #B79F55;
-}
-.panel-card::before {
-  top: -1px; left: -1px;
-  border-right: none; border-bottom: none;
-}
-.panel-card::after {
-  bottom: -1px; right: -1px;
-  border-left: none; border-top: none;
+  box-shadow:
+    inset 2px 2px 6px rgba(0,0,0,0.6),
+    inset -2px -2px 6px rgba(255,255,255,0.05);
+  font-family: 'Cinzel', serif;
 }
 
-/* 5) Panel header separator */
+/* Header separator */
 .panel-card .header {
-  @apply flex justify-between items-center mb-4 pb-2;
+  @apply flex items-center justify-between mb-4 pb-2;
   border-bottom: 1px solid rgba(183,159,85,0.3);
 }
 
-/* 6) Logo in cards */
-.coin-logo {
-  @apply w-6 h-6 rounded-full border border-[#3A473F] mr-2;
+/* Monogram icon */
+.coin-icon {
+  font-family: 'cryptofont' !important;
+  font-size: 1.75rem;
+  color: #B79F55;
+  line-height: 1;
 }
 
-/* 7) Price & pct styling */
+
+/* Price & pct */
 .price {
-  @apply text-3xl text-[#E4DCCF] font-bold mb-1;
-  font-feature-settings: 'tnum';
+  @apply text-3xl font-serif mb-1;
+  font-size: 1.75rem;    /* ~text-3xl */
+  margin-bottom: 0.25rem;/* ~mb-1 */
 }
 .pct-positive {
-  @apply text-green-400 text-sm font-medium;
+  @apply text-green-400 text-sm font-medium mb-4; 
+  color: #4ade80;        /* green-400 */
+  font-size: 0.875rem;   /* text-sm */
+  font-weight: 500;
 }
 .pct-negative {
-  @apply text-red-400 text-sm font-medium;
+  @apply text-red-400 text-sm font-medium mb-4; 
+  color: #f87171;        /* red-400 */
+  font-size: 0.875rem;
+  font-weight: 500;
 }

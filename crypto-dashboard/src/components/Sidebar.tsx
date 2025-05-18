@@ -6,31 +6,40 @@ import {
   Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 
-const icons = [
-  { key: 'dash', Component: HomeIcon },
-  { key: 'markets', Component: ChartBarIcon },
-  { key: 'port', Component: Squares2X2Icon },
-];
-
 export default function Sidebar() {
   return (
-    <aside className="sidebar">
-      {/* Logo */}
-      <div className="text-2xl mb-8" style={{ color: '#B79F55' }}>
-        💰
-      </div>
+    <aside
+      className="
+        w-20
+        min-h-screen
+        p-4
+        bg-richPanel
+        flex flex-col items-center gap-6
 
-      {/* Icons in squares */}
-      {icons.map(({ key, Component }) => (
-        <button key={key} className="icon-btn">
-          <Component className="w-6 h-6 stroke-current" />
+        /* ← Added gold lining on right edge: */
+        border-r-2 border-gold
+      "
+    >
+      <div className="text-gold text-2xl">L</div>
+      {[HomeIcon, ChartBarIcon, Squares2X2Icon].map((Icon, i) => (
+        <button
+          key={i}
+          className="
+            w-12 h-12 flex items-center justify-center
+            bg-richPanel border border-[#3A473F] rounded
+            transition hover:bg-[#3A473F]
+          "
+        >
+          <Icon className="w-6 h-6 text-gold" />
         </button>
       ))}
-
       <div className="flex-1" />
-
-      <button className="icon-btn">
-        <Cog6ToothIcon className="w-6 h-6 stroke-current" />
+      <button className="
+        w-12 h-12 flex items-center justify-center
+        bg-richPanel border border-[#3A473F] rounded
+        transition hover:bg-[#3A473F]
+      ">
+        <Cog6ToothIcon className="w-6 h-6 text-gold" />
       </button>
     </aside>
   );
