@@ -3,16 +3,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Full‑screen gradient */
+/* 1) Full-screen olive/charcoal gradient */
 html, body {
-  @apply m-0 p-0 w-full h-full bg-richBg text-ivory font-serif;
-  background: linear-gradient(135deg, #1B2A25, #0F1A16);
+  @apply m-0 p-0 w-full h-full font-serif;
+  background: linear-gradient(135deg, #2A3A33, #1F2A26);
+  color: #E4DCCF; /* ivory */
 }
 
-/* Panel styling with corner notches */
-.panel-card {
-  @apply bg-richPanel border border-panelBorder rounded-2xl shadow-rich p-6 relative overflow-hidden;
+/* 2) Sidebar styling */
+.sidebar {
+  @apply w-20 min-h-screen p-4 flex flex-col items-center;
+  background: #27312D; /* rich dark green */
 }
+.sidebar .icon-btn {
+  @apply mb-6 w-12 h-12 flex items-center justify-center rounded-lg border border-[#3A473F] hover:bg-[#3A473F] transition;
+  color: #B79F55; /* gold */
+}
+
+/* 3) Header integrated */
+.app-header {
+  @apply w-full px-6 py-4 mb-6;
+  background: #27312D;
+  border-bottom: 1px solid #3A473F;
+}
+.app-header h1 {
+  @apply text-4xl text-[#B79F55];
+}
+
+/* 4) Panel cards with fancy corners */
+.panel-card {
+  @apply p-6 relative bg-[#22332E] border border-[#3A473F] shadow-[0_4px_12px_rgba(23,18,15,0.5)];
+}
+/* Beveled corner effect */
 .panel-card::before,
 .panel-card::after {
   content: '';
@@ -29,9 +51,25 @@ html, body {
   border-left: none; border-top: none;
 }
 
-/* Sidebar texture (faint noise overlay) */
-.sidebar {
-  @apply bg-richPanel;
-  background-image: url('/textures/noise.png'), none;
-  background-blend-mode: overlay;
+/* 5) Panel header separator */
+.panel-card .header {
+  @apply flex justify-between items-center mb-4 pb-2;
+  border-bottom: 1px solid rgba(183,159,85,0.3);
+}
+
+/* 6) Logo in cards */
+.coin-logo {
+  @apply w-6 h-6 rounded-full border border-[#3A473F] mr-2;
+}
+
+/* 7) Price & pct styling */
+.price {
+  @apply text-3xl text-[#E4DCCF] font-bold mb-1;
+  font-feature-settings: 'tnum';
+}
+.pct-positive {
+  @apply text-green-400 text-sm font-medium;
+}
+.pct-negative {
+  @apply text-red-400 text-sm font-medium;
 }
