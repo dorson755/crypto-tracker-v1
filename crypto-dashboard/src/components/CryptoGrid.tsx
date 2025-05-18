@@ -1,6 +1,7 @@
 import { useLiveCrypto, type Coin } from '../hooks/useLiveCrypto';
 import TileCard from './TileCard';
 
+
 export default function CryptoGrid() {
   const coins: Coin[] = useLiveCrypto(6);
   return (
