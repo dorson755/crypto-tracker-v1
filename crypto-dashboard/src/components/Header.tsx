@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function Header({ city }: { city: string }) {
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-richPanel border-b border-panelBorder">

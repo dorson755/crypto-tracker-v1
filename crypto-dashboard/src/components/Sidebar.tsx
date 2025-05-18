@@ -19,7 +19,6 @@ export default function Sidebar() {
         border-r-2 border-gold
       "
     >
-      <div className="text-gold text-2xl">L</div>
       {[HomeIcon, ChartBarIcon, Squares2X2Icon].map((Icon, i) => (
         <button
           key={i}

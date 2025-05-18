@@ -1,5 +1,3 @@
-import React from "react";
-
 interface CryptoCardProps {
   name: string;
   symbol: string;
